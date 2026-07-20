@@ -246,7 +246,6 @@ st.sidebar.markdown(f"""
             {logo_html}
         </span>
         <span style="font-weight: 700; font-size: 1.25rem; color: var(--text-color);">MRR Intelligence</span>
-        <span style="background-color: #3b82f6; color: white; font-size: 0.7rem; font-weight: 700; padding: 2px 6px; border-radius: 4px;">v1.0</span>
     </div>
 """, unsafe_allow_html=True)
 st.sidebar.divider()
