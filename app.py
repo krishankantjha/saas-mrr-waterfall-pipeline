@@ -28,6 +28,23 @@ st.markdown("""
         font-family: 'Outfit', sans-serif;
     }
     
+    /* Hide Streamlit top header bar */
+    header[data-testid="stHeader"] {
+        visibility: hidden;
+        height: 0px;
+    }
+    
+    /* Reduce page container top padding */
+    div.block-container {
+        padding-top: 1.5rem !important;
+        padding-bottom: 2rem !important;
+    }
+    
+    /* Reduce sidebar top padding */
+    [data-testid="stSidebarUserContent"] {
+        padding-top: 2rem !important;
+    }
+    
     /* Section Headers */
     .section-header {
         font-size: 1.5rem;
