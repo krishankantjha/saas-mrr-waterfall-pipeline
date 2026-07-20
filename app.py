@@ -25,21 +25,6 @@ st.markdown("""
         font-family: 'Outfit', sans-serif;
     }
     
-    /* Card Container Styling */
-    div.stMetric {
-        background-color: #ffffff;
-        border: 1px solid #f0f2f6;
-        padding: 20px;
-        border-radius: 12px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02), 0 1px 3px rgba(0, 0, 0, 0.05);
-        transition: transform 0.2s ease-in-out;
-    }
-    
-    div.stMetric:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 12px rgba(0, 0, 0, 0.04), 0 2px 4px rgba(0, 0, 0, 0.05);
-    }
-    
     /* Section Headers */
     .section-header {
         font-size: 1.5rem;
@@ -61,6 +46,70 @@ st.markdown("""
         margin-top: 10px;
         margin-bottom: 20px;
     }
+    
+    /* Custom KPI Cards Layout */
+    .kpi-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+        margin-bottom: 20px;
+        width: 100%;
+    }
+    .kpi-card {
+        flex: 1;
+        min-width: 180px;
+        background-color: #ffffff;
+        border: 1px solid #e2e8f0;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02), 0 1px 3px rgba(0, 0, 0, 0.05);
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    }
+    .kpi-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 12px rgba(0, 0, 0, 0.04), 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+    .kpi-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 12px;
+    }
+    .kpi-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+    }
+    .icon-mrr { background-color: #ecfdf5; color: #10b981; }
+    .icon-cust { background-color: #eff6ff; color: #3b82f6; }
+    .icon-arpu { background-color: #f5f3ff; color: #8b5cf6; }
+    .icon-nrr { background-color: #fff7ed; color: #f97316; }
+    .icon-churn { background-color: #fef2f2; color: #ef4444; }
+    
+    .kpi-label {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #64748b;
+    }
+    .kpi-value {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #0f172a;
+        margin-bottom: 6px;
+    }
+    .kpi-delta {
+        font-size: 0.75rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+    }
+    .delta-up { color: #10b981; }
+    .delta-down { color: #ef4444; }
     </style>
 """, unsafe_allow_html=True)
 
@@ -165,7 +214,14 @@ if not DB_PATH.exists():
 
 countries, industries, months_list = get_filter_options()
 
-st.sidebar.title("📈 MRR Analytics")
+# Sidebar Title with Version Tag
+st.sidebar.markdown("""
+    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 5px;">
+        <span style="font-size: 24px;">📊</span>
+        <span style="font-weight: 700; font-size: 1.25rem; color: #1e293b;">MRR Intelligence</span>
+        <span style="background-color: #3b82f6; color: white; font-size: 0.7rem; font-weight: 700; padding: 2px 6px; border-radius: 4px;">v1.0</span>
+    </div>
+""", unsafe_allow_html=True)
 st.sidebar.divider()
 
 selected_countries = st.sidebar.multiselect(
@@ -196,6 +252,19 @@ st.sidebar.markdown("""
     * **Database**: DuckDB (In-Memory View)
     * **Data Source**: Synthetically generated subscriber lifecycles (1,000 customers).
 """)
+
+# Pinned User Profile Footer in Sidebar
+st.sidebar.markdown("""
+    <div style="display: flex; align-items: center; gap: 12px; border-top: 1px solid #e2e8f0; padding-top: 15px; margin-top: 30px;">
+        <div style="background-color: #0f172a; color: white; font-weight: 700; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.9rem;">
+            KK
+        </div>
+        <div>
+            <div style="font-weight: 600; font-size: 0.85rem; color: #1e293b;">Krishan Kant Jha</div>
+            <div style="font-size: 0.7rem; color: #64748b;">Analytics Engineer</div>
+        </div>
+    </div>
+""", unsafe_allow_html=True)
 
 # Load data and run calculations under a spinner
 with st.spinner("Loading dashboard data..."):
@@ -245,38 +314,81 @@ st.title("SaaS MRR Waterfall Dashboard")
 st.markdown(f"**Timeline Period**: Monthly Recurring Revenue movements as of **{target_month.strftime('%B %Y')}**")
 
 # Row 1: KPI Metric Cards
-col1, col2, col3, col4, col5 = st.columns(5)
+ending_val = f"${m_ending:,.2f}"
+cust_val = f"{m_customers:,}"
+arpu_val = f"${m_arpu:,.2f}"
+nrr_val = f"{m_nrr:.2f}%"
+churn_val = f"{m_churn:.2f}%"
 
-col1.metric(
-    label="Ending MRR",
-    value=f"${m_ending:,.2f}",
-    delta=f"{delta_mrr_pct:+.1f}% vs last month" if p_ending > 0 else None
-)
+if p_ending > 0:
+    delta_mrr_str = f"▲ {delta_mrr_pct:+.1f}% vs last month" if delta_mrr_pct >= 0 else f"▼ {delta_mrr_pct:.1f}% vs last month"
+    delta_cust_str = f"▲ {delta_cust:+} customers vs last month" if delta_cust >= 0 else f"▼ {delta_cust} customers vs last month"
+    delta_arpu_str = f"▲ {delta_arpu_pct:+.1f}% vs last month" if delta_arpu_pct >= 0 else f"▼ {delta_arpu_pct:.1f}% vs last month"
+    delta_nrr_str = f"▲ {delta_nrr:+.2f} pp vs last month" if delta_nrr >= 0 else f"▼ {delta_nrr:.2f} pp vs last month"
+    delta_churn_str = f"▼ {delta_churn:+.2f} pp vs last month" if delta_churn <= 0 else f"▲ {delta_churn:+.2f} pp vs last month"
+else:
+    delta_mrr_str = "No prior month data"
+    delta_cust_str = "No prior month data"
+    delta_arpu_str = "No prior month data"
+    delta_nrr_str = "No prior month data"
+    delta_churn_str = "No prior month data"
 
-col2.metric(
-    label="Active Customers",
-    value=f"{m_customers:,}",
-    delta=f"{delta_cust:+} customers vs last month" if p_ending > 0 else None
-)
+delta_mrr_class = "delta-up" if delta_mrr_pct >= 0 else "delta-down"
+delta_cust_class = "delta-up" if delta_cust >= 0 else "delta-down"
+delta_arpu_class = "delta-up" if delta_arpu_pct >= 0 else "delta-down"
+delta_nrr_class = "delta-up" if delta_nrr >= 0 else "delta-down"
+delta_churn_class = "delta-up" if delta_churn <= 0 else "delta-down"
 
-col3.metric(
-    label="ARPU",
-    value=f"${m_arpu:,.2f}",
-    delta=f"{delta_arpu_pct:+.1f}% vs last month" if p_arpu > 0 else None
-)
-
-col4.metric(
-    label="NRR (Net Retention)",
-    value=f"{m_nrr:.2f}%",
-    delta=f"{delta_nrr:+.2f} pp vs last month" if p_ending > 0 else None
-)
-
-col5.metric(
-    label="Gross Churn Rate",
-    value=f"{m_churn:.2f}%",
-    delta=f"{delta_churn:+.2f} pp vs last month" if p_ending > 0 else None,
-    delta_color="inverse"  # Churn increase is bad, decrease is good
-)
+kpi_html = f"""
+<div class="kpi-row">
+    <!-- Ending MRR -->
+    <div class="kpi-card">
+        <div class="kpi-header">
+            <div class="kpi-icon icon-mrr">💵</div>
+            <div class="kpi-label">Ending MRR</div>
+        </div>
+        <div class="kpi-value">{ending_val}</div>
+        <div class="kpi-delta {delta_mrr_class}">{delta_mrr_str}</div>
+    </div>
+    <!-- Active Customers -->
+    <div class="kpi-card">
+        <div class="kpi-header">
+            <div class="kpi-icon icon-cust">👥</div>
+            <div class="kpi-label">Active Customers</div>
+        </div>
+        <div class="kpi-value">{cust_val}</div>
+        <div class="kpi-delta {delta_cust_class}">{delta_cust_str}</div>
+    </div>
+    <!-- ARPU -->
+    <div class="kpi-card">
+        <div class="kpi-header">
+            <div class="kpi-icon icon-arpu">🪙</div>
+            <div class="kpi-label">ARPU</div>
+        </div>
+        <div class="kpi-value">{arpu_val}</div>
+        <div class="kpi-delta {delta_arpu_class}">{delta_arpu_str}</div>
+    </div>
+    <!-- NRR -->
+    <div class="kpi-card">
+        <div class="kpi-header">
+            <div class="kpi-icon icon-nrr">📈</div>
+            <div class="kpi-label">NRR (Net Retention)</div>
+        </div>
+        <div class="kpi-value">{nrr_val}</div>
+        <div class="kpi-delta {delta_nrr_class}">{delta_nrr_str}</div>
+    </div>
+    <!-- Gross Churn Rate -->
+    <div class="kpi-card">
+        <div class="kpi-header">
+            <div class="kpi-icon icon-churn">🚨</div>
+            <div class="kpi-label">Gross Churn Rate</div>
+        </div>
+        <div class="kpi-value">{churn_val}</div>
+        <div class="kpi-delta {delta_churn_class}">{delta_churn_str}</div>
+    </div>
+</div>
+"""
+st.markdown(kpi_html, unsafe_allow_html=True)
 
 # Row 2: Waterfall Chart & Equation summary
 st.markdown('<div class="section-header">MRR Waterfall Movements</div>', unsafe_allow_html=True)
@@ -364,6 +476,52 @@ with trend_col:
         paper_bgcolor="rgba(0,0,0,0)"
     )
     st.plotly_chart(trend_fig, use_container_width=True)
+    
+    # Compute CAGR and Growth metrics from the 18-month trends dataframe
+    if not df_trends.empty and len(df_trends) > 1:
+        first_row = df_trends.iloc[0]
+        last_row = df_trends.iloc[-1]
+        
+        first_mrr = float(first_row["ending_mrr"])
+        last_mrr = float(last_row["ending_mrr"])
+        first_cust = int(first_row["active_customers"])
+        last_cust = int(last_row["active_customers"])
+        
+        mrr_growth_pct = ((last_mrr - first_mrr) / first_mrr * 100) if first_mrr > 0 else 0.0
+        cust_growth_pct = ((last_cust - first_cust) / first_cust * 100) if first_cust > 0 else 0.0
+        
+        years = (len(df_trends) - 1) / 12.0
+        mrr_cagr = (((last_mrr / first_mrr) ** (1 / years) - 1) * 100) if first_mrr > 0 and last_mrr > 0 else 0.0
+        cust_cagr = (((last_cust / first_cust) ** (1 / years) - 1) * 100) if first_cust > 0 and last_cust > 0 else 0.0
+    else:
+        mrr_growth_pct, cust_growth_pct, mrr_cagr, cust_cagr = 0.0, 0.0, 0.0, 0.0
+
+    st.markdown("<br>", unsafe_allow_html=True)
+    c_g1, c_g2, c_g3, c_g4 = st.columns(4)
+    c_g1.markdown(f"""
+    <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 10px; border-radius: 8px; text-align: center;">
+        <div style="font-size: 0.72rem; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">MRR Growth (18M)</div>
+        <div style="font-size: 1.1rem; font-weight: 700; color: #10b981; margin-top: 4px;">▲ {mrr_growth_pct:+.1f}%</div>
+    </div>
+    """, unsafe_allow_html=True)
+    c_g2.markdown(f"""
+    <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 10px; border-radius: 8px; text-align: center;">
+        <div style="font-size: 0.72rem; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Customer Growth (18M)</div>
+        <div style="font-size: 1.1rem; font-weight: 700; color: #10b981; margin-top: 4px;">▲ {cust_growth_pct:+.1f}%</div>
+    </div>
+    """, unsafe_allow_html=True)
+    c_g3.markdown(f"""
+    <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 10px; border-radius: 8px; text-align: center;">
+        <div style="font-size: 0.72rem; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">MRR CAGR</div>
+        <div style="font-size: 1.1rem; font-weight: 700; color: #3b82f6; margin-top: 4px;">{mrr_cagr:.1f}%</div>
+    </div>
+    """, unsafe_allow_html=True)
+    c_g4.markdown(f"""
+    <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 10px; border-radius: 8px; text-align: center;">
+        <div style="font-size: 0.72rem; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Customer CAGR</div>
+        <div style="font-size: 1.1rem; font-weight: 700; color: #3b82f6; margin-top: 4px;">{cust_cagr:.1f}%</div>
+    </div>
+    """, unsafe_allow_html=True)
 
 with segment_col:
     # Display segment composition using active customer company sizes
@@ -425,10 +583,17 @@ df_display = df_ledger[[
 if df_display.empty:
     st.info("No transaction records found matching the active filters or search term.")
 else:
+    def style_categories(val):
+        if val in ["Upgrade", "New", "Reactivation"]:
+            return "background-color: #ecfdf5; color: #047857; font-weight: bold;"
+        elif val in ["Downgrade", "Contraction", "Churn"]:
+            return "background-color: #fef2f2; color: #b91c1c; font-weight: bold;"
+        return ""
+
     st.dataframe(
         df_display.style.format({
             "Monthly MRR Change": "${:+,.2f}"
-        }),
+        }).map(style_categories, subset=["Action Category"]),
         use_container_width=True,
         height=300
     )
@@ -456,3 +621,10 @@ with st.expander("🛠️ Under the Hood: Data Pipeline & SQL Transformations"):
         st.code(raw_sql, language="sql")
     except Exception:
         st.warning("View schema SQL script not found on disk.")
+
+# Main Canvas Page Footer
+st.markdown("""
+    <div style="text-align: center; color: #64748b; font-size: 0.8rem; margin-top: 60px; padding-bottom: 20px; border-top: 1px solid #f1f5f9; padding-top: 20px;">
+        © 2025 MRR Intelligence Dashboard • Built with Streamlit, DuckDB & Plotly
+    </div>
+""", unsafe_allow_html=True)
