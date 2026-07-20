@@ -628,6 +628,6 @@ with st.expander("🛠️ Under the Hood: Data Pipeline & SQL Transformations"):
 # Main Canvas Page Footer
 st.markdown("""
     <div style="text-align: center; color: #64748b; font-size: 0.8rem; margin-top: 60px; padding-bottom: 20px; border-top: 1px solid #f1f5f9; padding-top: 20px;">
-        © 2025 MRR Intelligence Dashboard • Built with Streamlit, DuckDB & Plotly
+        © 2026 MRR Intelligence Platform • Developed by Krishan Kant Jha
     </div>
 """, unsafe_allow_html=True)
