@@ -250,6 +250,14 @@ st.sidebar.markdown(f"""
 """, unsafe_allow_html=True)
 st.sidebar.divider()
 
+# Filters Section Header
+st.sidebar.markdown("""
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px; margin-bottom: 10px;">
+        <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-color); opacity: 0.6; text-transform: uppercase; letter-spacing: 0.5px;">Filters</span>
+        <a href="/" target="_self" style="font-size: 0.75rem; color: #3b82f6; text-decoration: none; font-weight: 600;">Clear all</a>
+    </div>
+""", unsafe_allow_html=True)
+
 selected_countries = st.sidebar.multiselect(
     "Country Filter",
     options=countries,
@@ -281,14 +289,17 @@ st.sidebar.markdown("""
 
 # Pinned User Profile Footer in Sidebar
 st.sidebar.markdown("""
-    <div style="display: flex; align-items: center; gap: 12px; border-top: 1px solid var(--border-color, #e2e8f0); padding-top: 15px; margin-top: 30px;">
-        <div style="background-color: #0f172a; color: white; font-weight: 700; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.9rem;">
-            KK
+    <div style="display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border-color, #e2e8f0); padding-top: 15px; margin-top: 30px;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="background-color: #0f172a; color: white; font-weight: 700; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.9rem;">
+                KK
+            </div>
+            <div>
+                <div style="font-weight: 600; font-size: 0.85rem; color: var(--text-color);">Krishan Kant Jha</div>
+                <div style="font-size: 0.7rem; color: var(--text-color); opacity: 0.75;">Analytics Engineer</div>
+            </div>
         </div>
-        <div>
-            <div style="font-weight: 600; font-size: 0.85rem; color: var(--text-color);">Krishan Kant Jha</div>
-            <div style="font-size: 0.7rem; color: var(--text-color); opacity: 0.75;">Analytics Engineer</div>
-        </div>
+        <div style="color: var(--text-color); opacity: 0.6; font-size: 1.2rem; font-weight: bold; padding-right: 5px; cursor: pointer;">⋮</div>
     </div>
 """, unsafe_allow_html=True)
 
