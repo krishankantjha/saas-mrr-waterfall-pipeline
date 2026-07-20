@@ -29,17 +29,18 @@ st.markdown("""
     .section-header {
         font-size: 1.5rem;
         font-weight: 600;
-        color: #1e293b;
+        color: var(--text-color);
         margin-top: 1.5rem;
         margin-bottom: 0.5rem;
-        border-bottom: 2px solid #f1f5f9;
+        border-bottom: 2px solid var(--border-color, #f1f5f9);
         padding-bottom: 8px;
     }
     
     /* Formula Box */
     .formula-container {
-        background-color: #f8fafc;
-        border: 1px solid #e2e8f0;
+        background-color: var(--secondary-background-color);
+        border: 1px solid var(--border-color, #e2e8f0);
+        color: var(--text-color);
         border-radius: 8px;
         padding: 15px;
         text-align: center;
@@ -58,8 +59,9 @@ st.markdown("""
     .kpi-card {
         flex: 1;
         min-width: 180px;
-        background-color: #ffffff;
-        border: 1px solid #e2e8f0;
+        background-color: var(--secondary-background-color);
+        border: 1px solid var(--border-color, #e2e8f0);
+        color: var(--text-color);
         padding: 20px;
         border-radius: 12px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02), 0 1px 3px rgba(0, 0, 0, 0.05);
@@ -84,21 +86,22 @@ st.markdown("""
         justify-content: center;
         font-size: 1.1rem;
     }
-    .icon-mrr { background-color: #ecfdf5; color: #10b981; }
-    .icon-cust { background-color: #eff6ff; color: #3b82f6; }
-    .icon-arpu { background-color: #f5f3ff; color: #8b5cf6; }
-    .icon-nrr { background-color: #fff7ed; color: #f97316; }
-    .icon-churn { background-color: #fef2f2; color: #ef4444; }
+    .icon-mrr { background-color: rgba(16, 185, 129, 0.15); color: #10b981; }
+    .icon-cust { background-color: rgba(59, 130, 246, 0.15); color: #3b82f6; }
+    .icon-arpu { background-color: rgba(139, 92, 246, 0.15); color: #8b5cf6; }
+    .icon-nrr { background-color: rgba(249, 115, 22, 0.15); color: #f97316; }
+    .icon-churn { background-color: rgba(239, 68, 68, 0.15); color: #ef4444; }
     
     .kpi-label {
         font-size: 0.85rem;
         font-weight: 600;
-        color: #64748b;
+        color: var(--text-color);
+        opacity: 0.8;
     }
     .kpi-value {
         font-size: 1.8rem;
         font-weight: 700;
-        color: #0f172a;
+        color: var(--text-color);
         margin-bottom: 6px;
     }
     .kpi-delta {
@@ -218,7 +221,7 @@ countries, industries, months_list = get_filter_options()
 st.sidebar.markdown("""
     <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 5px;">
         <span style="font-size: 24px;">📊</span>
-        <span style="font-weight: 700; font-size: 1.25rem; color: #1e293b;">MRR Intelligence</span>
+        <span style="font-weight: 700; font-size: 1.25rem; color: var(--text-color);">MRR Intelligence</span>
         <span style="background-color: #3b82f6; color: white; font-size: 0.7rem; font-weight: 700; padding: 2px 6px; border-radius: 4px;">v1.0</span>
     </div>
 """, unsafe_allow_html=True)
@@ -255,13 +258,13 @@ st.sidebar.markdown("""
 
 # Pinned User Profile Footer in Sidebar
 st.sidebar.markdown("""
-    <div style="display: flex; align-items: center; gap: 12px; border-top: 1px solid #e2e8f0; padding-top: 15px; margin-top: 30px;">
+    <div style="display: flex; align-items: center; gap: 12px; border-top: 1px solid var(--border-color, #e2e8f0); padding-top: 15px; margin-top: 30px;">
         <div style="background-color: #0f172a; color: white; font-weight: 700; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.9rem;">
             KK
         </div>
         <div>
-            <div style="font-weight: 600; font-size: 0.85rem; color: #1e293b;">Krishan Kant Jha</div>
-            <div style="font-size: 0.7rem; color: #64748b;">Analytics Engineer</div>
+            <div style="font-weight: 600; font-size: 0.85rem; color: var(--text-color);">Krishan Kant Jha</div>
+            <div style="font-size: 0.7rem; color: var(--text-color); opacity: 0.75;">Analytics Engineer</div>
         </div>
     </div>
 """, unsafe_allow_html=True)
@@ -585,9 +588,9 @@ if df_display.empty:
 else:
     def style_categories(val):
         if val in ["Upgrade", "New", "Reactivation"]:
-            return "background-color: #ecfdf5; color: #047857; font-weight: bold;"
+            return "background-color: rgba(16, 185, 129, 0.2); color: #10b981; font-weight: bold;"
         elif val in ["Downgrade", "Contraction", "Churn"]:
-            return "background-color: #fef2f2; color: #b91c1c; font-weight: bold;"
+            return "background-color: rgba(239, 68, 68, 0.2); color: #ef4444; font-weight: bold;"
         return ""
 
     st.dataframe(
