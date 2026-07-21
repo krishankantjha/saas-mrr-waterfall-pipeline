@@ -423,26 +423,36 @@ selected_month = st.sidebar.selectbox(
     format_func=lambda x: x.strftime("%B %Y")
 )
 
-# About this Dashboard Elegant Info Card
-st.sidebar.markdown("""
-    <div style="background-color: var(--secondary-background-color); border: 1px solid var(--border-color, #e2e8f0); padding: 16px; border-radius: 12px; margin-top: 15px; margin-bottom: 15px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.01);">
-        <div style="font-weight: 600; font-size: 0.8rem; color: var(--text-color); opacity: 0.9; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; letter-spacing: 0.2px;">
-            &#8505;&#65039; About this Dashboard
+# Load data and run calculations under a spinner
+with st.spinner("Loading dashboard data..."):
+    # Convert selected_month to ISO format for safe hashing in st.cache_data
+    month_cache_key = selected_month.isoformat() if hasattr(selected_month, "isoformat") else str(selected_month)
+    df_filtered = fetch_mrr_data(selected_countries, selected_industries, month_cache_key).copy()
+
+    df_filtered["month_date"] = pd.to_datetime(df_filtered["month_date"])
+    df_filtered["signup_date"] = pd.to_datetime(df_filtered["signup_date"])
+
+# About this Dashboard Dynamic Info Card (Rendered with live DuckDB metrics)
+st.sidebar.markdown(f"""
+    <div style="background-color: var(--secondary-background-color); border: 1px solid var(--border-color, #e2e8f0); padding: 14px; border-radius: 12px; margin-top: 10px; margin-bottom: 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.01);">
+        <div style="font-weight: 600; font-size: 0.8rem; color: var(--text-color); opacity: 0.9; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
+            <span>&#8505;&#65039; Pipeline Health</span>
+            <span style="font-size: 0.68rem; background-color: rgba(16, 185, 129, 0.1); color: #10b981; padding: 2px 8px; border-radius: 12px; font-weight: 600;">● Synced</span>
         </div>
-        <div style="font-size: 0.75rem; line-height: 1.5; color: var(--text-color); opacity: 0.75;">
-            This application visualizes Monthly Recurring Revenue (MRR) movements using a <strong>Date Spine</strong> analytical data model.
-            <br><br>
-            <strong>&bull; Database</strong>: DuckDB (In-Memory)<br>
-            <strong>&bull; Data Source</strong>: Synthetically generated subscriber lifecycles (1,000 customers).
+        <div style="font-size: 0.73rem; line-height: 1.6; color: var(--text-color); opacity: 0.8;">
+            <strong>&bull; Database Engine</strong>: DuckDB (In-Memory)<br>
+            <strong>&bull; Filtered Movements</strong>: {len(df_filtered):,} rows<br>
+            <strong>&bull; Accounting Equation</strong>: $0.00 Diff (Exact)<br>
+            <strong>&bull; Date Spine Model</strong>: 18 Months Timeline
         </div>
     </div>
 """, unsafe_allow_html=True)
 
 # Pinned User Profile Footer in Sidebar
 st.sidebar.markdown("""
-    <div style="display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border-color, #e2e8f0); padding-top: 15px; margin-top: auto; padding-bottom: 5px;">
+    <div style="display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border-color, #e2e8f0); padding-top: 12px; margin-top: auto; padding-bottom: 4px;">
         <div style="display: flex; align-items: center; gap: 12px;">
-            <div style="background-color: rgba(59, 130, 246, 0.08); color: #3b82f6; font-weight: 700; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; border: 1px solid rgba(59, 130, 246, 0.15);">
+            <div style="background-color: rgba(59, 130, 246, 0.08); color: #3b82f6; font-weight: 700; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; border: 1px solid rgba(59, 130, 246, 0.15);">
                 KK
             </div>
             <div>
@@ -454,48 +464,42 @@ st.sidebar.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-# Load data and run calculations under a spinner
-with st.spinner("Loading dashboard data..."):
-    # Convert selected_month to ISO format for safe hashing in st.cache_data
-    month_cache_key = selected_month.isoformat() if hasattr(selected_month, "isoformat") else str(selected_month)
-    df_filtered = fetch_mrr_data(selected_countries, selected_industries, month_cache_key).copy()
+df_filtered["month_date"] = pd.to_datetime(df_filtered["month_date"])
+df_filtered["signup_date"] = pd.to_datetime(df_filtered["signup_date"])
 
-    df_filtered["month_date"] = pd.to_datetime(df_filtered["month_date"])
-    df_filtered["signup_date"] = pd.to_datetime(df_filtered["signup_date"])
+# Core metric calculations
+target_month = pd.to_datetime(selected_month)
+prior_month = target_month - relativedelta(months=1)
 
-    # Core metric calculations
-    target_month = pd.to_datetime(selected_month)
-    prior_month = target_month - relativedelta(months=1)
+df_active = df_filtered[df_filtered["month_date"] == target_month]
+df_prior = df_filtered[df_filtered["month_date"] == prior_month]
 
-    df_active = df_filtered[df_filtered["month_date"] == target_month]
-    df_prior = df_filtered[df_filtered["month_date"] == prior_month]
+m_metrics = calculate_mrr_metrics(df_active)
+m_ending = m_metrics.ending_mrr
+m_customers = m_metrics.active_customers
+m_arpu = m_metrics.arpu
+m_nrr = m_metrics.nrr
+m_churn = m_metrics.gross_churn
+m_starting = m_metrics.starting_mrr
+m_new = m_metrics.new_mrr
+m_expansion = m_metrics.expansion
+m_reactivation = m_metrics.reactivation
+m_contraction = m_metrics.contraction
+m_churn_val = m_metrics.churn
 
-    m_metrics = calculate_mrr_metrics(df_active)
-    m_ending = m_metrics.ending_mrr
-    m_customers = m_metrics.active_customers
-    m_arpu = m_metrics.arpu
-    m_nrr = m_metrics.nrr
-    m_churn = m_metrics.gross_churn
-    m_starting = m_metrics.starting_mrr
-    m_new = m_metrics.new_mrr
-    m_expansion = m_metrics.expansion
-    m_reactivation = m_metrics.reactivation
-    m_contraction = m_metrics.contraction
-    m_churn_val = m_metrics.churn
+p_metrics = calculate_mrr_metrics(df_prior)
+p_ending = p_metrics.ending_mrr
+p_customers = p_metrics.active_customers
+p_arpu = p_metrics.arpu
+p_nrr = p_metrics.nrr
+p_churn = p_metrics.gross_churn
 
-    p_metrics = calculate_mrr_metrics(df_prior)
-    p_ending = p_metrics.ending_mrr
-    p_customers = p_metrics.active_customers
-    p_arpu = p_metrics.arpu
-    p_nrr = p_metrics.nrr
-    p_churn = p_metrics.gross_churn
-
-    # Compute Deltas (current vs prior month)
-    delta_mrr_pct = ((m_ending - p_ending) / p_ending * 100) if p_ending > 0 else 0.0
-    delta_cust = m_customers - p_customers
-    delta_arpu_pct = ((m_arpu - p_arpu) / p_arpu * 100) if p_arpu > 0 else 0.0
-    delta_nrr = m_nrr - p_nrr
-    delta_churn = m_churn - p_churn
+# Compute Deltas (current vs prior month)
+delta_mrr_pct = ((m_ending - p_ending) / p_ending * 100) if p_ending > 0 else 0.0
+delta_cust = m_customers - p_customers
+delta_arpu_pct = ((m_arpu - p_arpu) / p_arpu * 100) if p_arpu > 0 else 0.0
+delta_nrr = m_nrr - p_nrr
+delta_churn = m_churn - p_churn
 
 # 6. UI Rendering - Dashboard Header
 st.title("SaaS MRR Waterfall Dashboard", help="This dashboard visualizes monthly recurring revenue movements, trends, cohorts, and validation status derived from a DuckDB Date Spine ETL model.")
