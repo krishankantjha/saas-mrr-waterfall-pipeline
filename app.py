@@ -40,23 +40,33 @@ st.markdown("""
         padding-bottom: 2rem !important;
     }
     
-    /* Reduce the native Streamlit sidebar header spacing */
-    div[data-testid="stSidebarHeader"] {
-        padding-top: 0rem !important;
-        padding-bottom: 0rem !important;
-        min-height: 0px !important;
-        height: auto !important;
+    /* Completely disable sidebar scrollbar */
+    section[data-testid="stSidebar"] {
+        overflow: hidden !important;
+    }
+    section[data-testid="stSidebar"] > div {
+        overflow: hidden !important;
     }
     
-    /* Flexbox vertical distribution for full-height sidebar without scrollbar */
+    /* Reduce the native Streamlit sidebar header spacing */
+    div[data-testid="stSidebarHeader"] {
+        display: none !important;
+    }
+    
+    /* Balanced vertical distribution for full-height sidebar */
     [data-testid="stSidebarUserContent"] {
-        padding-top: 0rem !important;
-        margin-top: -6px !important;
+        padding-top: 0.5rem !important;
         display: flex !important;
         flex-direction: column !important;
-        justify-content: space-between !important;
-        min-height: calc(100vh - 1.5rem) !important;
+        height: 100vh !important;
+        max-height: 100vh !important;
+        overflow: hidden !important;
         box-sizing: border-box !important;
+    }
+
+    /* Even spacing for all widget containers in the sidebar */
+    [data-testid="stSidebar"] div[data-testid="stElementContainer"] {
+        margin-bottom: 0.5rem !important;
     }
     
     /* Thinner Premium Scrollbars for Sidebar */
