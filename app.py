@@ -46,21 +46,26 @@ st.markdown("""
         padding-top: 0rem !important;
     }
     
-    /* Replace native Streamlit tooltip question mark icon with a sleek info icon (ℹ) */
+    /* Replace native Streamlit tooltip question mark icon with the exact vector circled-info icon (ⓘ) */
     [data-testid="stTooltipIcon"] svg {
         display: none !important;
     }
-    [data-testid="stTooltipIcon"]::after {
-        content: "ℹ" !important;
-        font-size: 0.85rem !important;
-        color: var(--text-color) !important;
-        opacity: 0.6 !important;
-        font-weight: 500 !important;
-        transition: opacity 0.15s ease, color 0.15s ease;
+    [data-testid="stTooltipIcon"] {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 15px !important;
+        height: 15px !important;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cline x1='12' y1='16' x2='12' y2='12'/%3E%3Cline x1='12' y1='8' x2='12.01' y2='8'/%3E%3C/svg%3E") !important;
+        background-repeat: no-repeat !important;
+        background-position: center !important;
+        background-size: contain !important;
+        opacity: 0.65 !important;
+        transition: opacity 0.15s ease !important;
+        cursor: pointer !important;
     }
-    [data-testid="stTooltipIcon"]:hover::after {
+    [data-testid="stTooltipIcon"]:hover {
         opacity: 1 !important;
-        color: #3b82f6 !important;
     }
     
     /* Completely disable sidebar scrollbar */
