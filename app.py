@@ -40,6 +40,12 @@ st.markdown("""
         padding-bottom: 2rem !important;
     }
     
+    /* Align main title h1 top baseline with sidebar logo */
+    h1 {
+        margin-top: -0.75rem !important;
+        padding-top: 0rem !important;
+    }
+    
     /* Completely disable sidebar scrollbar */
     section[data-testid="stSidebar"] {
         overflow: hidden !important;
