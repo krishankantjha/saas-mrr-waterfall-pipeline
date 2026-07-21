@@ -46,6 +46,23 @@ st.markdown("""
         padding-top: 0rem !important;
     }
     
+    /* Replace native Streamlit tooltip question mark icon with a sleek info icon (ℹ) */
+    [data-testid="stTooltipIcon"] svg {
+        display: none !important;
+    }
+    [data-testid="stTooltipIcon"]::after {
+        content: "ℹ" !important;
+        font-size: 0.85rem !important;
+        color: var(--text-color) !important;
+        opacity: 0.6 !important;
+        font-weight: 500 !important;
+        transition: opacity 0.15s ease, color 0.15s ease;
+    }
+    [data-testid="stTooltipIcon"]:hover::after {
+        opacity: 1 !important;
+        color: #3b82f6 !important;
+    }
+    
     /* Completely disable sidebar scrollbar */
     section[data-testid="stSidebar"] {
         overflow: hidden !important;
