@@ -52,6 +52,83 @@ st.markdown("""
         padding-top: 0rem !important;
     }
     
+    /* Thinner Premium Scrollbars for Sidebar */
+    [data-testid="stSidebar"] ::-webkit-scrollbar {
+        width: 4px !important;
+        height: 4px !important;
+    }
+    [data-testid="stSidebar"] ::-webkit-scrollbar-thumb {
+        background-color: rgba(148, 163, 184, 0.24) !important;
+        border-radius: 10px !important;
+    }
+    [data-testid="stSidebar"] ::-webkit-scrollbar-track {
+        background: transparent !important;
+    }
+
+    /* Premium card layout styling for native Select/Multiselect inputs in the sidebar */
+    [data-testid="stSidebar"] div[data-baseweb="select"] {
+        border-radius: 8px !important;
+    }
+    [data-testid="stSidebar"] div[data-baseweb="select"] > div {
+        border: 1px solid var(--border-color, #e2e8f0) !important;
+        border-radius: 8px !important;
+        background-color: var(--secondary-background-color) !important;
+        box-shadow: none !important;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    [data-testid="stSidebar"] div[data-baseweb="select"] > div:hover {
+        border-color: #3b82f6 !important;
+    }
+    [data-testid="stSidebar"] div[data-baseweb="select"] > div:focus-within {
+        border-color: #3b82f6 !important;
+        box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.15) !important;
+    }
+    
+    /* Clean widget labels typography & spacing in the sidebar */
+    [data-testid="stSidebar"] div[data-testid="stWidgetLabel"] {
+        margin-bottom: 5px !important;
+    }
+    [data-testid="stSidebar"] div[data-testid="stWidgetLabel"] p {
+        font-size: 0.82rem !important;
+        font-weight: 500 !important;
+        color: var(--text-color) !important;
+        opacity: 0.8 !important;
+        letter-spacing: 0.2px !important;
+    }
+
+    /* Pill-shaped selected count badges in multiselect cards */
+    [data-testid="stSidebar"] div[data-baseweb="tag"] {
+        background-color: rgba(59, 130, 246, 0.08) !important;
+        color: #3b82f6 !important;
+        border-radius: 20px !important;
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+        font-size: 0.75rem !important;
+        font-weight: 500 !important;
+        border: none !important;
+    }
+    [data-testid="stSidebar"] div[data-baseweb="tag"] span {
+        color: #3b82f6 !important;
+        font-weight: 500 !important;
+    }
+    [data-testid="stSidebar"] div[data-baseweb="tag"] svg {
+        fill: #3b82f6 !important;
+    }
+    
+    /* Premium visual overrides for select dropdown list popovers */
+    div[data-baseweb="popover"] ul {
+        border-radius: 8px !important;
+        border: 1px solid #f1f5f9 !important;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02) !important;
+    }
+    div[data-baseweb="popover"] li {
+        transition: background-color 0.15s ease !important;
+        font-size: 0.82rem !important;
+    }
+    div[data-baseweb="popover"] li:hover {
+        background-color: #f8fafc !important;
+    }
+    
     /* Section Headers */
     .section-header {
         font-size: 1.5rem;
@@ -277,9 +354,9 @@ st.sidebar.divider()
 
 # Filters Section Header
 st.sidebar.markdown("""
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px; margin-bottom: 10px;">
-        <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-color); opacity: 0.6; text-transform: uppercase; letter-spacing: 0.5px;">Filters</span>
-        <a href="/" target="_self" style="font-size: 0.75rem; color: #3b82f6; text-decoration: none; font-weight: 600;">Clear all</a>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px; margin-bottom: 10px; padding-left: 2px; padding-right: 2px;">
+        <span style="font-size: 0.7rem; font-weight: 600; color: var(--text-color); opacity: 0.5; text-transform: uppercase; letter-spacing: 1.2px;">Filters</span>
+        <a href="/" target="_self" style="font-size: 0.72rem; color: #3b82f6; text-decoration: none; font-weight: 500; letter-spacing: 0.2px; transition: opacity 0.15s ease;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">Clear all</a>
     </div>
 """, unsafe_allow_html=True)
 
@@ -303,28 +380,34 @@ selected_month = st.sidebar.selectbox(
     format_func=lambda x: x.strftime("%B %Y")
 )
 
-st.sidebar.divider()
+# About this Dashboard Elegant Info Card
 st.sidebar.markdown("""
-    ### About this Dashboard
-    This application visualizes Monthly Recurring Revenue (MRR) movements using a **Date Spine** analytical data model.
-    
-    * **Database**: DuckDB (In-Memory View)
-    * **Data Source**: Synthetically generated subscriber lifecycles (1,000 customers).
-""")
+    <div style="background-color: var(--secondary-background-color); border: 1px solid var(--border-color, #e2e8f0); padding: 16px; border-radius: 12px; margin-top: 20px; margin-bottom: 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.01);">
+        <div style="font-weight: 600; font-size: 0.8rem; color: var(--text-color); opacity: 0.9; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; letter-spacing: 0.2px;">
+            ℹ️ About this Dashboard
+        </div>
+        <div style="font-size: 0.75rem; line-height: 1.5; color: var(--text-color); opacity: 0.75;">
+            This application visualizes Monthly Recurring Revenue (MRR) movements using a <strong>Date Spine</strong> analytical data model.
+            <br><br>
+            <strong>• Database</strong>: DuckDB (In-Memory)<br>
+            <strong>• Data Source</strong>: Synthetically generated subscriber lifecycles (1,000 customers).
+        </div>
+    </div>
+""", unsafe_allow_html=True)
 
 # Pinned User Profile Footer in Sidebar
 st.sidebar.markdown("""
-    <div style="display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border-color, #e2e8f0); padding-top: 15px; margin-top: 30px;">
+    <div style="display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border-color, #e2e8f0); padding-top: 15px; margin-top: 25px;">
         <div style="display: flex; align-items: center; gap: 12px;">
-            <div style="background-color: #0f172a; color: white; font-weight: 700; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.9rem;">
+            <div style="background-color: rgba(59, 130, 246, 0.08); color: #3b82f6; font-weight: 700; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; border: 1px solid rgba(59, 130, 246, 0.15);">
                 KK
             </div>
             <div>
-                <div style="font-weight: 600; font-size: 0.85rem; color: var(--text-color);">Krishan Kant Jha</div>
-                <div style="font-size: 0.7rem; color: var(--text-color); opacity: 0.75;">Analytics Engineer</div>
+                <div style="font-weight: 600; font-size: 0.82rem; color: var(--text-color); line-height: 1.2;">Krishan Kant Jha</div>
+                <div style="font-size: 0.68rem; color: var(--text-color); opacity: 0.6; margin-top: 2px;">Analytics Engineer</div>
             </div>
         </div>
-        <div style="color: var(--text-color); opacity: 0.6; font-size: 1.2rem; font-weight: bold; padding-right: 5px; cursor: pointer;">⋮</div>
+        <div style="color: var(--text-color); opacity: 0.5; font-size: 1.1rem; font-weight: bold; padding-right: 5px; cursor: pointer; transition: opacity 0.15s ease;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='0.5'">⋮</div>
     </div>
 """, unsafe_allow_html=True)
 
