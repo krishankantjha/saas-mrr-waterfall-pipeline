@@ -40,9 +40,16 @@ st.markdown("""
         padding-bottom: 2rem !important;
     }
     
-    /* Reduce sidebar top padding to make it flush */
-    [data-testid="stSidebarUserContent"] {
+    /* Reduce the native Streamlit sidebar header spacing */
+    div[data-testid="stSidebarHeader"] {
         padding-top: 0.5rem !important;
+        padding-bottom: 0rem !important;
+        min-height: 0px !important;
+    }
+    
+    /* Reduce sidebar user content top padding to make it flush */
+    [data-testid="stSidebarUserContent"] {
+        padding-top: 0rem !important;
     }
     
     /* Section Headers */
