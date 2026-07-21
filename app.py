@@ -48,10 +48,15 @@ st.markdown("""
         height: auto !important;
     }
     
-    /* Reduce sidebar user content top padding and align baseline to match h1 */
+    /* Flexbox vertical distribution for full-height sidebar without scrollbar */
     [data-testid="stSidebarUserContent"] {
         padding-top: 0rem !important;
         margin-top: -6px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-between !important;
+        min-height: calc(100vh - 1.5rem) !important;
+        box-sizing: border-box !important;
     }
     
     /* Thinner Premium Scrollbars for Sidebar */
@@ -382,11 +387,11 @@ selected_month = st.sidebar.selectbox(
 
 # About this Dashboard Elegant Info Card
 st.sidebar.markdown("""
-    <div style="background-color: var(--secondary-background-color); border: 1px solid var(--border-color, #e2e8f0); padding: 12px 14px; border-radius: 12px; margin-top: 10px; margin-bottom: 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.01);">
-        <div style="font-weight: 600; font-size: 0.78rem; color: var(--text-color); opacity: 0.9; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; letter-spacing: 0.2px;">
+    <div style="background-color: var(--secondary-background-color); border: 1px solid var(--border-color, #e2e8f0); padding: 16px; border-radius: 12px; margin-top: 15px; margin-bottom: 15px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.01);">
+        <div style="font-weight: 600; font-size: 0.8rem; color: var(--text-color); opacity: 0.9; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; letter-spacing: 0.2px;">
             &#8505;&#65039; About this Dashboard
         </div>
-        <div style="font-size: 0.73rem; line-height: 1.4; color: var(--text-color); opacity: 0.75;">
+        <div style="font-size: 0.75rem; line-height: 1.5; color: var(--text-color); opacity: 0.75;">
             This application visualizes Monthly Recurring Revenue (MRR) movements using a <strong>Date Spine</strong> analytical data model.
             <br><br>
             <strong>&bull; Database</strong>: DuckDB (In-Memory)<br>
@@ -397,9 +402,9 @@ st.sidebar.markdown("""
 
 # Pinned User Profile Footer in Sidebar
 st.sidebar.markdown("""
-    <div style="display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border-color, #e2e8f0); padding-top: 10px; margin-top: 12px;">
+    <div style="display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border-color, #e2e8f0); padding-top: 15px; margin-top: auto; padding-bottom: 5px;">
         <div style="display: flex; align-items: center; gap: 12px;">
-            <div style="background-color: rgba(59, 130, 246, 0.08); color: #3b82f6; font-weight: 700; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; border: 1px solid rgba(59, 130, 246, 0.15);">
+            <div style="background-color: rgba(59, 130, 246, 0.08); color: #3b82f6; font-weight: 700; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; border: 1px solid rgba(59, 130, 246, 0.15);">
                 KK
             </div>
             <div>
