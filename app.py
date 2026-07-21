@@ -47,9 +47,10 @@ st.markdown("""
         height: auto !important;
     }
     
-    /* Reduce sidebar user content top padding to make it flush */
+    /* Reduce sidebar user content top padding and align baseline to match h1 */
     [data-testid="stSidebarUserContent"] {
         padding-top: 0rem !important;
+        margin-top: -6px !important;
     }
     
     /* Thinner Premium Scrollbars for Sidebar */
@@ -341,13 +342,13 @@ else:
         </svg>
     """
 
-# Sidebar Title with Version Tag
+# Sidebar Title
 st.sidebar.markdown(f"""
-    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 5px;">
+    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 5px; padding-top: 2px;">
         <span style="width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; color: #3b82f6;">
             {logo_html}
         </span>
-        <span style="font-weight: 700; font-size: 1.25rem; color: var(--text-color);">MRR Intelligence</span>
+        <span style="font-weight: 700; font-size: 1.4rem; color: var(--text-color); letter-spacing: -0.3px;">MRR Intelligence</span>
     </div>
 """, unsafe_allow_html=True)
 st.sidebar.divider()
