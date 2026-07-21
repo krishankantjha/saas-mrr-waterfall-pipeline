@@ -28,10 +28,9 @@ st.markdown("""
         font-family: 'Outfit', sans-serif;
     }
     
-    /* Hide Streamlit top header bar */
+    /* Hide and collapse Streamlit top header bar */
     header[data-testid="stHeader"] {
-        visibility: hidden;
-        height: 0px;
+        display: none !important;
     }
     
     /* Reduce page container top padding to make it flush */
@@ -42,9 +41,10 @@ st.markdown("""
     
     /* Reduce the native Streamlit sidebar header spacing */
     div[data-testid="stSidebarHeader"] {
-        padding-top: 0.5rem !important;
+        padding-top: 0rem !important;
         padding-bottom: 0rem !important;
         min-height: 0px !important;
+        height: auto !important;
     }
     
     /* Reduce sidebar user content top padding to make it flush */
